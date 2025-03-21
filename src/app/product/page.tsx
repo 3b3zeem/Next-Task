@@ -1,9 +1,8 @@
 import { Product } from "@/types/products";
 import { Category } from "@/types/category";
-import ProductCategoriesClient from "@/components/ProductCategoriesClient";
-import FeaturedProducts from "@/components/FeaturedProducts";
+import ProductListClient from "@/components/ProductListClient";
 
-export default async function Home() {
+export default async function ProductsPage() {
   let allProducts: Product[] = [];
   let allCategories: Category[] = [];
 
@@ -37,35 +36,23 @@ export default async function Home() {
     } else if (categoriesData && typeof categoriesData === "object" && Array.isArray(categoriesData.data)) {
       allCategories = categoriesData.data;
     } else {
-      console.error("Categories Data is not an array:", categoriesData);
-      allCategories = [];
+      throw new Error("Unexpected categories data format");
     }
 
   } catch (error) {
     console.error("Error fetching data:", error);
     return (
       <div className="container mx-auto py-10">
-        <h1 className="text-3xl font-bold text-center mb-8">Welcome to Our Store</h1>
+        <h1 className="text-3xl font-bold text-center mb-8">Product Listing</h1>
         <p className="text-center text-red-500">Failed to load data. Please try again later.</p>
       </div>
     );
   }
 
-  const featuredProducts = Array.isArray(allProducts) ? allProducts.slice(0, 3) : [];
-
   return (
     <div className="container mx-auto py-10">
-      <h1 className="text-3xl font-bold text-center mb-8">Welcome to Our Store</h1>
-
-      <section className="mb-12">
-        <h2 className="text-2xl font-semibold mb-4">Featured Products</h2>
-        <FeaturedProducts initialProducts={featuredProducts} />
-      </section>
-
-      <section>
-        <h2 className="text-2xl font-semibold mb-4">Shop by Category & its products</h2>
-        <ProductCategoriesClient categories={allCategories} products={allProducts} />
-      </section>
+      <h1 className="text-3xl font-bold text-center mb-8">Product Listing</h1>
+      <ProductListClient products={allProducts} categories={allCategories} />
     </div>
   );
 }
